@@ -1,14 +1,16 @@
 import random
 import time
+
 import accel
 import rgb
+from display_helper import rgb_to_hex
 
 def log(message):
     print(message)
 
 # Setup RGB
 WIDTH, HEIGHT = 32, 19
-
+image_buffer = [0]*(WIDTH*HEIGHT)
 # Matrix Animation Variables
 matrix_columns = [random.randint(0, HEIGHT - 1) for _ in range(WIDTH)]  # Y positions of the head of each column
 cyan_columns = []  # List to store the indices of cyan columns
@@ -52,7 +54,7 @@ def initialize_cyan_columns(min_cyan=0, max_cyan=3):
         selected.add(col)
     cyan_columns = list(selected)
 
-def draw_matrix_frame():
+def buffer_matrix_frame():
     """Draw one frame of the Matrix effect."""
     for x in range(WIDTH):
         # Determine the color for the current column
@@ -66,25 +68,26 @@ def draw_matrix_frame():
 
         # Draw the "head" of the column
         if not is_protected_pixel(x, matrix_columns[x]):
-            set_pixel(x, matrix_columns[x], *color)
+            prepare_pixel_global((x, matrix_columns[x]), color)
 
         # Draw the trailing characters with dimmer colors
         for i in range(1, 4):
             char_y = (matrix_columns[x] - i) % HEIGHT
             if not is_protected_pixel(x, char_y):
-                set_pixel(x, char_y, color[0], color[1] // (i + 1), color[2] // (i + 1))
+                prepare_pixel_global((x, char_y), (color[0], color[1] // (i + 1), color[2] // (i + 1)))
 
-def set_pixel(x, y, r, g, b):
-    """Set a single pixel on the display."""
-    if 0 <= x < WIDTH and 0 <= y < HEIGHT:
-        rgb.pixel((r, g, b), (x, y))
+def prepare_pixel_global(pos, color):
+    (posx, posy)= pos
+    hex_color = rgb_to_hex(color)
+    i = posy*WIDTH+ posx
+    image_buffer[i] = hex_color
 
-def draw_kolab():
+def buffer_kolab():
     """Draw the 'KOLAB' text at its current position."""
     for y, line in enumerate(kolab_message):
         for x, char in enumerate(line):
             if char != ' ':
-                set_pixel(kolab_x + x, kolab_y + y, 11, 118, 187)  # RGB color for KOLAB text
+                prepare_pixel_global((kolab_x+ x, kolab_y+y), (11, 118, 187))  # RGB color for KOLAB text
 
 def update_kolab_position():
     """Update the KOLAB text position based on accelerometer input."""
@@ -110,21 +113,25 @@ def update_kolab_position():
     initialize_protected_pixels()  # Update protected pixels
 
 
+def render_image_buffer():
+    rgb.image(image_buffer, size=(WIDTH, HEIGHT))
+
 def ko_lab_matrix_animation():
     # Setup accel
     accel.init()
     log("Entering ko_lab_matrix_animation")
     rgb.clear()
-    draw_kolab()  # Draw the KOLAB text once at the start
+    buffer_kolab()  # Draw the KOLAB text once at the start
     initialize_protected_pixels()  # Initialize the protected pixels for the KOLAB text
     initialize_cyan_columns()  # Initialize cyan columns for the Matrix effect
     loop_count = 0
     while True:
         update_kolab_position()  # Update KOLAB text position based on accelerometer input
-        draw_matrix_frame()  # Draw the Matrix background without touching the KOLAB text
-        draw_kolab()  # Redraw KOLAB at the new position
+        buffer_matrix_frame()  # Draw the Matrix background without touching the KOLAB text
+        buffer_kolab()  # Redraw KOLAB at the new position
         time.sleep(0.1)  # Add a small delay to control the animation speed
-
+        rgb.clear()
+        render_image_buffer()
         loop_count += 1
         if loop_count % 100 == 0:
             log(f"Main loop iteration: {loop_count}")

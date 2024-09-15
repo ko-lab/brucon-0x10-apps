@@ -1,6 +1,7 @@
 DEBUG = True
 from winner import ko_lab_matrix_animation
 from loser import loser_animation
+from display_helper import rgba_to_hex
 def log(message):
     print(message)
 
@@ -99,8 +100,7 @@ def write_kolab(text_color=(255, 000, 000, 0xff), random_background=False):
                     found_unmasked_kolab_pixel = True
                     color = text_color  # Assign text color
 
-            (r, g, b, alpha) = color
-            color_value = (r << 24) | (g << 16) | (b << 8) | alpha
+            color_value = rgba_to_hex(color)
             data[index_in_img] = color_value
     if not found_unmasked_kolab_pixel:
         game_won = True
