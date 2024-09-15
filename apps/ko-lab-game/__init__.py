@@ -131,7 +131,7 @@ def update_block_position():
     if accel:
         ax, ay, _ = accel.get_xyz()
         # Adjust sensitivity as needed
-        print('ay', ay)
+        # print('ay', ay)
 
         dx = to_1or2(ax, 10000)
         dy = to_1or2(ay, 5000)
@@ -144,7 +144,7 @@ def update_block_position():
         for y in range(block_size):
             for x in range(block_size):
                 if not block_locations[new_y + y][new_x + x]:
-                    print('marking block location: ' + str(new_y + y) + ', ' + str(new_x + x))
+                    # print('marking block location: ' + str(new_y + y) + ', ' + str(new_x + x))
                     block_locations[new_y + y][new_x + x] = True
 
         block_x, block_y = new_x, new_y
