@@ -80,7 +80,7 @@ def loser_animation():
         fading_out = brightness <= 0.2 or brightness >= 1.0  # Switch fading direction
         brightness = max(0.2, min(brightness, 1.0))  # Clamp brightness
 
-        time.sleep(0.1)  # Control animation speed
+        time.sleep(0.05)  # Control animation speed
 
     # Letter fall-down phase
     fall_start_time = time.time()

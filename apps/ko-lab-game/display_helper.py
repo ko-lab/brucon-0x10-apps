@@ -1,6 +1,6 @@
 def rgb_to_hex(color):
     (r, g, b) = color
-    rgba_to_hex((r,g,b,0))
+    return rgba_to_hex((r,g,b,0))
 
 def rgba_to_hex(color):
     (r, g, b, alpha) = color

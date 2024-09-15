@@ -77,6 +77,7 @@ def buffer_matrix_frame():
                 prepare_pixel_global((x, char_y), (color[0], color[1] // (i + 1), color[2] // (i + 1)))
 
 def prepare_pixel_global(pos, color):
+    global image_buffer
     (posx, posy)= pos
     hex_color = rgb_to_hex(color)
     i = posy*WIDTH+ posx
@@ -114,24 +115,36 @@ def update_kolab_position():
 
 
 def render_image_buffer():
-    rgb.image(image_buffer, size=(WIDTH, HEIGHT))
+    rgb.image(image_buffer, pos=(0,0), size=(WIDTH, HEIGHT))
 
 def ko_lab_matrix_animation():
     # Setup accel
     accel.init()
     log("Entering ko_lab_matrix_animation")
     rgb.clear()
+    # print('ko_lab_matrix_animation: clear done')
+    render_image_buffer()
+#     print('ko_lab_matrix_animation: initial render done')
     buffer_kolab()  # Draw the KOLAB text once at the start
+    render_image_buffer()
+#     print('ko_lab_matrix_animation: buffer+render kolab done')
     initialize_protected_pixels()  # Initialize the protected pixels for the KOLAB text
+#     print('ko_lab_matrix_animation: initialize_protected_pixels done')
     initialize_cyan_columns()  # Initialize cyan columns for the Matrix effect
+#     print('ko_lab_matrix_animation: init_cyan done')
     loop_count = 0
     while True:
         update_kolab_position()  # Update KOLAB text position based on accelerometer input
+#         print('ko_lab_matrix_animation: loop update_kolab_pos done')
         buffer_matrix_frame()  # Draw the Matrix background without touching the KOLAB text
+#         print('ko_lab_matrix_animation: loop buffer_matrix_frame done')
         buffer_kolab()  # Redraw KOLAB at the new position
-        time.sleep(0.1)  # Add a small delay to control the animation speed
+#         print('ko_lab_matrix_animation: loop buffer_kolab done')
+        time.sleep(0.05)  # Add a small delay to control the animation speed
         rgb.clear()
+#         print('ko_lab_matrix_animation: loop clear done')
         render_image_buffer()
+#         print('ko_lab_matrix_animation: loop render done')
         loop_count += 1
         if loop_count % 100 == 0:
             log(f"Main loop iteration: {loop_count}")
