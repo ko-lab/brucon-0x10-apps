@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 124.62,
+      "left": -14.63,
+      "attrs": { "flashSize": "8" }
+    },
+    { "type": "wokwi-mpu6050", "id": "imu1", "top": 186.22, "left": -132.08, "attrs": {} },
+    {
+      "type": "wokwi-neopixel-matrix",
+      "id": "matrix1",
+      "top": -354.12,
+      "left": -378.79,
+      "attrs": { "rows": "19", "cols": "32", "pixelSpacing": "1" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "BTN_UP",
+      "top": 169.4,
+      "left": 211.2,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "BTN_LEFT",
+      "top": 246.2,
+      "left": 144,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "BTN_RIGHT",
+      "top": 246.2,
+      "left": 297.6,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "BTN_DOWN",
+      "top": 323,
+      "left": 211.2,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "BTN_A",
+      "top": 188.6,
+      "left": -240,
+      "attrs": { "color": "black" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "BTN_B",
+      "top": 303.8,
+      "left": -240,
+      "attrs": { "color": "blue" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:18", "imu1:SDA", "green", [ "h-105.65", "v0.18", "h-66.96" ] ],
+    [ "esp:19", "imu1:SCL", "yellow", [ "h-162.93", "v-28.62" ] ],
+    [ "esp:GND.1", "imu1:GND", "black", [ "h-57.18", "v-86.22" ] ],
+    [ "esp:5", "matrix1:DIN", "violet", [ "h38.35", "v-86.4", "h0.01" ] ],
+    [ "esp:GND.2", "matrix1:GND", "black", [ "v-57.6", "h-76.53", "v-19.02" ] ],
+    [ "BTN_LEFT:1.l", "esp:26", "green", [ "h0" ] ],
+    [ "BTN_LEFT:2.r", "esp:GND.1", "black", [ "h0.2", "v29", "h-221.22" ] ],
+    [ "BTN_UP:2.r", "esp:GND.2", "black", [ "v-105.4", "h-192.07" ] ],
+    [ "BTN_UP:1.l", "esp:0", "green", [ "h-76.8", "v48.2" ] ],
+    [ "BTN_RIGHT:2.l", "esp:33", "green", [ "v19.4", "h-201.6", "v-86.4", "h-106.02" ] ],
+    [ "BTN_RIGHT:1.r", "esp:GND.1", "black", [ "h57.8", "v38.6", "h-432", "v-38.58" ] ],
+    [ "BTN_DOWN:2.l", "esp:27", "green", [ "h-96", "v-105.58" ] ],
+    [ "BTN_DOWN:1.r", "esp:GND.1", "black", [ "h0.2", "v57.6", "h-288.42" ] ],
+    [ "BTN_B:1.r", "esp:16", "green", [ "h163.4", "v-57.78" ] ],
+    [ "BTN_B:2.l", "esp:GND.1", "black", [ "v-48", "h403.25" ] ],
+    [ "BTN_A:1.l", "esp:GND.1", "black", [ "v29", "h258.78" ] ],
+    [ "BTN_A:2.r", "esp:15", "green", [ "h0" ] ],
+    [ "imu1:VCC", "esp:3V3", "red", [ "v0" ] ],
+    [ "matrix1:VCC", "esp:3V3", "red", [ "v76.8", "h-29.23" ] ]
+  ],
+  "dependencies": {}
+}
