@@ -1,7 +1,8 @@
 DEBUG = True
-from winner import ko_lab_matrix_animation
-from loser import loser_animation
-from display_helper import rgba_to_hex
+from apps.kolab_game.winner import ko_lab_matrix_animation
+from apps.kolab_game.loser import loser_animation
+from apps.kolab_game.display_helper import rgba_to_hex
+
 def log(message):
     print(message)
 
