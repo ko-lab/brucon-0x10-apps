@@ -3,7 +3,7 @@ import time
 
 import accel
 import rgb
-from apps.kolab_game.display_helper import rgb_to_hex
+from .display_helper import rgb_to_hex
 
 def log(message):
     print(message)
