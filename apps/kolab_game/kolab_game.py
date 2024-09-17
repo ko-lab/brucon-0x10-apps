@@ -15,7 +15,7 @@ import buttons
 WIDTH, HEIGHT = 32, 19
 
 # Game variables
-block_size = 2
+block_size = 1
 block_x, block_y = WIDTH // 2 - block_size // 2 - 1, HEIGHT // 2 - block_size // 2
 block_locations = [[False for _ in range(WIDTH)] for _ in range(HEIGHT)]
 game_won = False
@@ -26,8 +26,6 @@ def reset():
     global game_lost
     game_won = False
     game_lost = False
-    global block_size
-    block_size = 1
     global block_x
     global block_y
     block_x, block_y = WIDTH // 2 - block_size // 2 - 1, HEIGHT // 2 - block_size // 2
