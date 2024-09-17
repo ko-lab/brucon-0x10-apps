@@ -1,4 +1,4 @@
-IS_DEBUG = True
+IS_DEBUG = False
 
 def log(message):
     if IS_DEBUG: print(message)
