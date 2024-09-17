@@ -148,10 +148,10 @@ def main():
 
 def game_loop():
     if game_won:
-        game_won_loop()
+        MatrixAnimation(winner_message).show_loop(lambda: game_won)
         return
     if game_lost:
-        game_lost_loop()
+        MatrixAnimation(loser_message).show_loop(lambda: game_lost)
         return
     do_write= write_kolab()
     rgb.clear()
@@ -160,14 +160,6 @@ def game_loop():
     update_block_position()
     draw_block()
     time.sleep(0.1)  # Add a small delay to prevent the loop from running too fast
-
-
-def game_lost_loop():
-    MatrixAnimation(loser_message).show_loop()
-
-
-def game_won_loop():
-    MatrixAnimation(winner_message).show_loop()
 
 
 def startup_sequence():

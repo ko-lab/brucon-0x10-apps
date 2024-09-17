@@ -112,7 +112,7 @@ class MatrixAnimation:
         self.initialize_protected_pixels()  # Update protected pixels
 
 
-    def show_loop(self):
+    def show_loop(self, keep_showing = lambda: True):
         # Setup accel
         accel.init()
         log("Entering ko_lab_matrix_animation")
@@ -128,7 +128,7 @@ class MatrixAnimation:
         initialize_cyan_columns()  # Initialize cyan columns for the Matrix effect
         #     print('ko_lab_matrix_animation: init_cyan done')
         loop_count = 0
-        while True:
+        while keep_showing():
             self.update_kolab_position()  # Update KOLAB text position based on accelerometer input
             #         print('ko_lab_matrix_animation: loop update_kolab_pos done')
             buffer_matrix_frame()  # Draw the Matrix background without touching the KOLAB text
