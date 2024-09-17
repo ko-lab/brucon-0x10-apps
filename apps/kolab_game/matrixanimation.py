@@ -24,12 +24,6 @@ def prepare_pixel_global(pos, color):
     i = posy*WIDTH+ posx
     image_buffer[i] = hex_color
 
-kolab_protected_pixels = []
-
-def is_protected_pixel(x, y):
-    """Check if the given pixel is part of the KOLAB text."""
-    return (x, y) in kolab_protected_pixels
-
 def render_image_buffer():
         rgb.image(image_buffer, pos=(0,0), size=(WIDTH, HEIGHT))
 
@@ -56,14 +50,12 @@ def buffer_matrix_frame():
         matrix_columns[x] = (matrix_columns[x] + 1) % HEIGHT
 
         # Draw the "head" of the column
-        if not is_protected_pixel(x, matrix_columns[x]):
-            prepare_pixel_global((x, matrix_columns[x]), color)
+        prepare_pixel_global((x, matrix_columns[x]), color)
 
         # Draw the trailing characters with dimmer colors
         for i in range(1, 4):
             char_y = (matrix_columns[x] - i) % HEIGHT
-            if not is_protected_pixel(x, char_y):
-                prepare_pixel_global((x, char_y), (color[0], color[1] // (i + 1), color[2] // (i + 1)))
+            prepare_pixel_global((x, char_y), (color[0], color[1] // (i + 1), color[2] // (i + 1)))
 
 class MatrixAnimation:
     def __init__(self, kolab_message):
@@ -71,15 +63,6 @@ class MatrixAnimation:
         self.kolab_message = kolab_message
         self.kolab_x = (WIDTH - len(self.kolab_message[0])) // 2
         self.kolab_y = (HEIGHT - len(self.kolab_message)) // 2
-
-    def initialize_protected_pixels(self):
-        """Determine the pixels where the KOLAB text is located to protect them from the Matrix animation."""
-        kolab_protected_pixels.clear()
-        for y, line in enumerate(self.kolab_message):
-            for x, char in enumerate(line):
-                if char != ' ':
-                    kolab_protected_pixels.append((self.kolab_x + x, self.kolab_y + y))
-
 
 
     def buffer_kolab(self):
@@ -109,37 +92,25 @@ class MatrixAnimation:
             elif ay < -threshold:  # Tilted backward
                 self.kolab_y = min(HEIGHT - len(self.kolab_message), self.kolab_y + 1)
 
-        self.initialize_protected_pixels()  # Update protected pixels
-
 
     def show_loop(self, keep_showing = lambda: True):
         # Setup accel
         accel.init()
         log("Entering ko_lab_matrix_animation")
         rgb.clear()
-        # print('ko_lab_matrix_animation: clear done')
+        if self.kolab_message != '':
+            self.buffer_kolab()  # Draw the KOLAB text once at the start
         render_image_buffer()
-        #     print('ko_lab_matrix_animation: initial render done')
-        self.buffer_kolab()  # Draw the KOLAB text once at the start
-        render_image_buffer()
-        #     print('ko_lab_matrix_animation: buffer+render kolab done')
-        self.initialize_protected_pixels()  # Initialize the protected pixels for the KOLAB text
-        #     print('ko_lab_matrix_animation: initialize_protected_pixels done')
         initialize_cyan_columns()  # Initialize cyan columns for the Matrix effect
-        #     print('ko_lab_matrix_animation: init_cyan done')
         loop_count = 0
         while keep_showing():
-            self.update_kolab_position()  # Update KOLAB text position based on accelerometer input
-            #         print('ko_lab_matrix_animation: loop update_kolab_pos done')
             buffer_matrix_frame()  # Draw the Matrix background without touching the KOLAB text
-            #         print('ko_lab_matrix_animation: loop buffer_matrix_frame done')
-            self.buffer_kolab()  # Redraw KOLAB at the new position
-            #         print('ko_lab_matrix_animation: loop buffer_kolab done')
+            if self.kolab_message != '':
+                self.update_kolab_position()  # Update KOLAB text position based on accelerometer input
+                self.buffer_kolab()  # Redraw KOLAB at the new position
             time.sleep(0.05)  # Add a small delay to control the animation speed
             rgb.clear()
-            #         print('ko_lab_matrix_animation: loop clear done')
             render_image_buffer()
-            #         print('ko_lab_matrix_animation: loop render done')
             loop_count += 1
             if loop_count % 100 == 0:
                 log(f"Main loop iteration: {loop_count}")
