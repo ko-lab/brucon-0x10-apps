@@ -5,6 +5,7 @@ import accel
 import rgb
 from .display_helper import rgb_to_hex
 from .debug import log
+from .messages import brucon_message
 
 # Setup RGB
 WIDTH, HEIGHT = 32, 19
@@ -15,6 +16,10 @@ cyan_columns = []  # List to store the indices of cyan columns
 
 # Characters for the Matrix effect (not needed but here to resemble the idea)
 matrix_chars = [chr(i) for i in range(33, 127)]  # Printable ASCII characters
+
+def reset_buffer():
+    global image_buffer
+    image_buffer = [0]*(WIDTH*HEIGHT)
 
 # KOLAB Text and Protected Area
 def prepare_pixel_global(pos, color):
@@ -51,9 +56,8 @@ def buffer_matrix_frame():
 
         # Draw the "head" of the column
         prepare_pixel_global((x, matrix_columns[x]), color)
-
         # Draw the trailing characters with dimmer colors
-        for i in range(1, 4):
+        for i in range(1, 6):
             char_y = (matrix_columns[x] - i) % HEIGHT
             prepare_pixel_global((x, char_y), (color[0], color[1] // (i + 1), color[2] // (i + 1)))
 
@@ -65,9 +69,15 @@ class MatrixAnimation:
         self.message_y = (HEIGHT - len(self.custom_message)) // 2
 
 
+    def buffer_message_2(self):
+        self._buffer_message(self.custom_message)
+
     def buffer_message(self):
+       self._buffer_message(brucon_message)
+
+    def _buffer_message(self, msg):
         """Draw the 'KOLAB' text at its current position."""
-        for y, line in enumerate(self.custom_message):
+        for y, line in enumerate(msg):
             for x, char in enumerate(line):
                 if char != ' ':
                     prepare_pixel_global((self.message_x+ x, self.message_y+y), (11, 118, 187))  # RGB color for KOLAB text
@@ -98,20 +108,21 @@ class MatrixAnimation:
         accel.init()
         log("Entering ko_lab_matrix_animation")
         rgb.clear()
-        if self.custom_message != '':
-            self.buffer_message()  # Draw the KOLAB text once at the start
-        render_image_buffer()
+        rgb.setbrightness(100)
         initialize_cyan_columns()  # Initialize cyan columns for the Matrix effect
         loop_count = 0
         while keep_showing():
+            reset_buffer()
             buffer_matrix_frame()  # Draw the Matrix background without touching the KOLAB text
-            if self.custom_message != '':
-                self.update_message_position()  # Update KOLAB text position based on accelerometer input
+            self.update_message_position()  # Update KOLAB text position based on accelerometer input
+            if random.randint(0,10) == 10:
+                self.buffer_message_2()
+            else:
                 self.buffer_message()  # Redraw KOLAB at the new position
             rgb.clear()
             render_image_buffer()
             loop_count += 1
-            time.sleep(0.05)  # Add a small delay to control the animation speed
+            time.sleep(0.1)  # Add a small delay to control the animation speed
             if loop_count % 100 == 0:
                 log(f"Main loop iteration: {loop_count}")
 

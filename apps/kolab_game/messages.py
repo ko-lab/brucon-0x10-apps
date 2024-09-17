@@ -21,11 +21,12 @@ kolab_message_bordered = """
 
 
 loser_message = [
-    " L     OOO  SSS   EEEE RRR  ",
-    " L    O   O S     E    R  R ",
-    " L    O   O  SS   EEEE RRR  ",
-    " L    O   O    S  E    R R  ",
-    " LLLL  OOO  SSS   EEEE R  R "
+    " L     OOO    SSS  EEEE RRR   ",
+    " L    O   O  S     E    R  R  ",
+    " L    O   O   SS   EEEE RRR   ",
+    " L    O   O     S  E    R R   ",
+    " LLLL  OOO   SSS   EEEE R  R  "
 ]
 
+brucon_message = loser_message
 
