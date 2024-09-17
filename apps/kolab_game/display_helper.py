@@ -6,4 +6,3 @@ def rgba_to_hex(color):
     (r, g, b, alpha) = color
     color_value = (r << 24) | (g << 16) | (b << 8) | alpha
     return color_value
-

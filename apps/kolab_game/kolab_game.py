@@ -1,4 +1,4 @@
-from debug import IS_DEBUG
+from .debug import IS_DEBUG, log
 from .messages import loser_message
 from .messages import winner_message
 from .messages import kolab_message_bordered
@@ -20,10 +20,6 @@ block_x, block_y = WIDTH // 2 - block_size // 2 - 1, HEIGHT // 2 - block_size //
 block_locations = [[False for _ in range(WIDTH)] for _ in range(HEIGHT)]
 game_won = False
 game_lost = False
-
-
-def log(message):
-    print(message)
 
 def reset():
     global game_won

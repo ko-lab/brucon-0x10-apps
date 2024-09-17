@@ -1,3 +1,2 @@
-from kolab_game import main
-
+from .kolab_game import main
 main()
