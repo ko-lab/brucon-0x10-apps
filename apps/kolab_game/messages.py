@@ -19,7 +19,6 @@ kolab_message_bordered = """
 |                              |
 |IIIIIIIIIIIIIIIIIIIIIIIIIIIIII|"""
 
-
 loser_message = [
     " L     OOO    SSS  EEEE RRR   ",
     " L    O   O  S     E    R  R  ",
@@ -28,5 +27,10 @@ loser_message = [
     " LLLL  OOO   SSS   EEEE R  R  "
 ]
 
-brucon_message = loser_message
-
+brucon_message = [
+    "BBB  RRR  U  U  CC  OO  N   N",
+    "B  B R  R U  U C   O  O NN  N",
+    "BBB  RRR  U  U C   O  O N N N",
+    "B  B R R  U  U C   O  O N  NN",
+    "BBB  R  R UUUU  CC  OO  N   N"
+]

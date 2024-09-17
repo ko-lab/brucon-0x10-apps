@@ -6,6 +6,7 @@ import rgb
 from .display_helper import rgb_to_hex
 from .debug import log
 from .messages import brucon_message
+CUSTOM_MESSAGE_RATE = 20
 
 # Setup RGB
 WIDTH, HEIGHT = 32, 19
@@ -69,10 +70,10 @@ class MatrixAnimation:
         self.message_y = (HEIGHT - len(self.custom_message)) // 2
 
 
-    def buffer_message_2(self):
+    def buffer_custom_message(self):
         self._buffer_message(self.custom_message)
 
-    def buffer_message(self):
+    def buffer_brucon(self):
        self._buffer_message(brucon_message)
 
     def _buffer_message(self, msg):
@@ -115,10 +116,10 @@ class MatrixAnimation:
             reset_buffer()
             buffer_matrix_frame()  # Draw the Matrix background without touching the KOLAB text
             self.update_message_position()  # Update KOLAB text position based on accelerometer input
-            if random.randint(0,10) == 10:
-                self.buffer_message_2()
+            if random.randint(0, CUSTOM_MESSAGE_RATE) == CUSTOM_MESSAGE_RATE:
+                self.buffer_custom_message()
             else:
-                self.buffer_message()  # Redraw KOLAB at the new position
+                self.buffer_brucon()  # Redraw KOLAB at the new position
             rgb.clear()
             render_image_buffer()
             loop_count += 1
