@@ -58,39 +58,39 @@ def buffer_matrix_frame():
             prepare_pixel_global((x, char_y), (color[0], color[1] // (i + 1), color[2] // (i + 1)))
 
 class MatrixAnimation:
-    def __init__(self, kolab_message):
+    def __init__(self, custom_message):
         # Initial position of KOLAB text (centered)
-        self.kolab_message = kolab_message
-        self.kolab_x = (WIDTH - len(self.kolab_message[0])) // 2
-        self.kolab_y = (HEIGHT - len(self.kolab_message)) // 2
+        self.custom_message = custom_message
+        self.message_x = (WIDTH - len(self.custom_message[0])) // 2
+        self.message_y = (HEIGHT - len(self.custom_message)) // 2
 
 
-    def buffer_kolab(self):
+    def buffer_message(self):
         """Draw the 'KOLAB' text at its current position."""
-        for y, line in enumerate(self.kolab_message):
+        for y, line in enumerate(self.custom_message):
             for x, char in enumerate(line):
                 if char != ' ':
-                    prepare_pixel_global((self.kolab_x+ x, self.kolab_y+y), (11, 118, 187))  # RGB color for KOLAB text
+                    prepare_pixel_global((self.message_x+ x, self.message_y+y), (11, 118, 187))  # RGB color for KOLAB text
 
-    def update_kolab_position(self):
+    def update_message_position(self):
         """Update the KOLAB text position based on accelerometer input."""
         ax, ay, az = accel.get_xyz()
 
         # Adjust the sensitivity as needed
         threshold = 5
         if az < -threshold:  # Device held upright (neutral position)
-            self.kolab_x = (WIDTH - len(self.kolab_message[0])) // 2
-            self.kolab_y = (HEIGHT - len(self.kolab_message)) // 2
+            self.message_x = (WIDTH - len(self.custom_message[0])) // 2
+            self.message_y = (HEIGHT - len(self.custom_message)) // 2
         else:
             if ax > threshold:  # Tilted right
-                self.kolab_x = max(0, self.kolab_x - 1)
+                self.message_x = max(0, self.message_x - 1)
             elif ax < -threshold:  # Tilted left
-                self.kolab_x = min(WIDTH - len(self.kolab_message[0]), self.kolab_x + 1)
+                self.message_x = min(WIDTH - len(self.custom_message[0]), self.message_x + 1)
 
             if ay > threshold:  # Tilted forward
-                self.kolab_y = max(0, self.kolab_y - 1)
+                self.message_y = max(0, self.message_y - 1)
             elif ay < -threshold:  # Tilted backward
-                self.kolab_y = min(HEIGHT - len(self.kolab_message), self.kolab_y + 1)
+                self.message_y = min(HEIGHT - len(self.custom_message), self.message_y + 1)
 
 
     def show_loop(self, keep_showing = lambda: True):
@@ -98,20 +98,20 @@ class MatrixAnimation:
         accel.init()
         log("Entering ko_lab_matrix_animation")
         rgb.clear()
-        if self.kolab_message != '':
-            self.buffer_kolab()  # Draw the KOLAB text once at the start
+        if self.custom_message != '':
+            self.buffer_message()  # Draw the KOLAB text once at the start
         render_image_buffer()
         initialize_cyan_columns()  # Initialize cyan columns for the Matrix effect
         loop_count = 0
         while keep_showing():
             buffer_matrix_frame()  # Draw the Matrix background without touching the KOLAB text
-            if self.kolab_message != '':
-                self.update_kolab_position()  # Update KOLAB text position based on accelerometer input
-                self.buffer_kolab()  # Redraw KOLAB at the new position
-            time.sleep(0.05)  # Add a small delay to control the animation speed
+            if self.custom_message != '':
+                self.update_message_position()  # Update KOLAB text position based on accelerometer input
+                self.buffer_message()  # Redraw KOLAB at the new position
             rgb.clear()
             render_image_buffer()
             loop_count += 1
+            time.sleep(0.05)  # Add a small delay to control the animation speed
             if loop_count % 100 == 0:
                 log(f"Main loop iteration: {loop_count}")
 
