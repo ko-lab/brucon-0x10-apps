@@ -2,7 +2,7 @@ from .debug import IS_DEBUG, log
 from .messages import loser_message
 from .messages import winner_message
 from .messages import kolab_message_bordered
-from .display_helper import rgba_to_hex
+from .display_helper import rgba_to_hex, WIDTH, HEIGHT
 from .matrixanimation import MatrixAnimation
 
 import random
@@ -12,7 +12,6 @@ import rgb
 import buttons
 
 # Setup RGB
-WIDTH, HEIGHT = 32, 19
 
 # Game variables
 block_size = 1
@@ -34,23 +33,14 @@ def reset():
     startup_sequence()
 
 
-def set_pixel(x, y, r, g, b):
-    if 0 <= x < WIDTH and 0 <= y < HEIGHT:
-        rgb.pixel((r, g, b), (x, y))
-
-
-def fill(r, g, b):
-    rgb.background((r, g, b))
-
-
-def random_color(max=255):
+def random_rgba_color(max_value=255):
     if random.randint(0, 5) != 0:
-        return (0, 0, 0, 0)
+        return 0, 0, 0, 0
 
-    return (random.randint(0, max), random.randint(0, max), random.randint(0, max), 0xff)
+    return random.randint(0, max_value), random.randint(0, max_value), random.randint(0, max_value), 0xff
 
 
-def write_kolab(text_color=(255, 000, 000, 0xff), random_background=False):
+def buffer_kolab_render(text_color=(255, 000, 000, 0xff), random_background=False):
     global game_won
     global game_lost
 
@@ -75,7 +65,7 @@ def write_kolab(text_color=(255, 000, 000, 0xff), random_background=False):
                     color = (0, 0, 0, 255)  # Turn off places where the block as been
                 else:
                     found_unmasked_sparkle_pixel = True
-                    color = random_color(150) if random_background else (0, 100, 0, 0xff)
+                    color = random_rgba_color(150) if random_background else (0, 100, 0, 0xff)
             else:
                 if block_locations[global_y][global_x]:
                     color = (0, 255, 0, 255)
@@ -94,13 +84,16 @@ def write_kolab(text_color=(255, 000, 000, 0xff), random_background=False):
 
 
 def draw_sparkles():
-    write_kolab((255, 0, 0, 0xff), True)()
+    buffer_kolab_render((255, 0, 0, 0xff), True)()
 
 
 def draw_block():
     for y in range(block_size):
         for x in range(block_size):
-            set_pixel(block_x + x, block_y + y, 255, 255, 255)  # Red color
+            x1 = block_x + x
+            y1 = block_y + y
+            rgb.pixel((255, 255, 255), (x1, y1))
+
 
 def to_1or2(val50k, tresh):
     sign = val50k>0
@@ -153,9 +146,9 @@ def game_loop():
     if game_lost:
         MatrixAnimation(loser_message).show_loop(lambda: game_lost)
         return
-    do_write= write_kolab()
+    render_kolab= buffer_kolab_render()
     rgb.clear()
-    do_write()
+    render_kolab()
     # draw_sparkles()
     update_block_position()
     draw_block()
@@ -164,7 +157,7 @@ def game_loop():
 
 def startup_sequence():
     # fill(0, 0, 0)
-    write_kolab()()
+    buffer_kolab_render()()
     time.sleep(0.5)
     draw_block()
 

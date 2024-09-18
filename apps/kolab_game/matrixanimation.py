@@ -3,47 +3,32 @@ import time
 
 import accel
 import rgb
-from .display_helper import rgb_to_hex
+from .display_helper import reset_buffer, prepare_pixel_global, render_image_buffer, WIDTH, HEIGHT
 from .debug import log
 from .messages import brucon_message
 CUSTOM_MESSAGE_RATE = 20
 
 # Setup RGB
-WIDTH, HEIGHT = 32, 19
-image_buffer = [0]*(WIDTH*HEIGHT)
 # Matrix Animation Variables
 matrix_columns = [random.randint(0, HEIGHT - 1) for _ in range(WIDTH)]  # Y positions of the head of each column
-cyan_columns = []  # List to store the indices of cyan columns
 
 def do_sleep():
     [time.sleep(0.01) for i in range(0,5)]
 
-def reset_buffer():
-    global image_buffer
-    image_buffer = [0]*(WIDTH*HEIGHT)
-
 # KOLAB Text and Protected Area
-def prepare_pixel_global(pos, color):
-    global image_buffer
-    (posx, posy)= pos
-    hex_color = rgb_to_hex(color)
-    i = posy*WIDTH+ posx
-    image_buffer[i] = hex_color
 
-def render_image_buffer():
-        rgb.image(image_buffer, pos=(0,0), size=(WIDTH, HEIGHT))
-
-def initialize_cyan_columns(min_cyan=0, max_cyan=3):
+def calc_cyan_columns(min_cyan=0, max_cyan=3):
     """Randomly select columns to be cyan, between min_cyan and max_cyan."""
-    global cyan_columns
     num_cyan = random.randint(min_cyan, max_cyan)
     selected = set()
     while len(selected) < num_cyan:
         col = random.randint(0, WIDTH - 1)
         selected.add(col)
     cyan_columns = list(selected)
+    return cyan_columns
 
-def buffer_matrix_frame():
+
+def buffer_matrix_frame(cyan_columns):
     """Draw one frame of the Matrix effect."""
     for x in range(WIDTH):
         # Determine the color for the current column
@@ -81,7 +66,7 @@ class MatrixAnimation:
         for y, line in enumerate(msg):
             for x, char in enumerate(line):
                 if char != ' ':
-                    prepare_pixel_global((self.message_x+ x, self.message_y+y), (11, 118, 187))  # RGB color for KOLAB text
+                    prepare_pixel_global((self.message_x + x, self.message_y + y), (11, 118, 187))  # RGB color for KOLAB text
 
     def update_message_position(self):
         """Update the KOLAB text position based on accelerometer input."""
@@ -110,11 +95,11 @@ class MatrixAnimation:
         log("Entering ko_lab_matrix_animation")
         rgb.clear()
         rgb.setbrightness(100)
-        initialize_cyan_columns()  # Initialize cyan columns for the Matrix effect
+        cyan_columns = calc_cyan_columns()  # Initialize cyan columns for the Matrix effect
         loop_count = 0
         while keep_showing():
             reset_buffer()
-            buffer_matrix_frame()  # Draw the Matrix background without touching the KOLAB text
+            buffer_matrix_frame(cyan_columns)  # Draw the Matrix background without touching the KOLAB text
             self.update_message_position()  # Update KOLAB text position based on accelerometer input
             if random.randint(0, CUSTOM_MESSAGE_RATE) == CUSTOM_MESSAGE_RATE:
                 self.buffer_custom_message()
