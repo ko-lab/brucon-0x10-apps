@@ -25,6 +25,7 @@ def run_install_script(device_path, retries=3):
             break
         except subprocess.CalledProcessError:
             print(f"Install script failed on attempt {attempt}. Retrying...")
+            time.sleep(1)
         except OSError as e:
             print(f"Error executing script: {e}")
             break  # Stop retrying if there is a format error
