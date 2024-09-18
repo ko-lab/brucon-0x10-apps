@@ -15,8 +15,8 @@ image_buffer = [0]*(WIDTH*HEIGHT)
 matrix_columns = [random.randint(0, HEIGHT - 1) for _ in range(WIDTH)]  # Y positions of the head of each column
 cyan_columns = []  # List to store the indices of cyan columns
 
-# Characters for the Matrix effect (not needed but here to resemble the idea)
-matrix_chars = [chr(i) for i in range(33, 127)]  # Printable ASCII characters
+def do_sleep():
+    [time.sleep(0.01) for i in range(0,5)]
 
 def reset_buffer():
     global image_buffer
@@ -123,7 +123,7 @@ class MatrixAnimation:
             rgb.clear()
             render_image_buffer()
             loop_count += 1
-            time.sleep(0.1)  # Add a small delay to control the animation speed
+            do_sleep()
             if loop_count % 100 == 0:
                 log(f"Main loop iteration: {loop_count}")
 
