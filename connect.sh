@@ -7,5 +7,5 @@ DEFAULT_DIR="apps/kolab_game"
 APP_DIR="${1:-$DEFAULT_DIR}"
 echo "APP_DIR: [$APP_DIR]"
 
-python3 -m mpremote connect port:$PORT mount $APP_DIR run $APP_DIR/__init__.py
+python3 -m mpremote connect port:$PORT $1
 
