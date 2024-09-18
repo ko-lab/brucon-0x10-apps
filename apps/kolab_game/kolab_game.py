@@ -21,6 +21,26 @@ block_locations = [[False for _ in range(WIDTH)] for _ in range(HEIGHT)]
 game_won = False
 game_lost = False
 
+def copy_matrix_app():
+    copy_file('/apps/kolab_game/matrixanimation.py', '/apps/brucon_matrix/matrixanimation.py')
+
+def copy_file(source_path, destination_path):
+    try:
+        # Open the source file in read mode
+        with open(source_path, 'r') as source_file:
+            # Read the contents of the source file
+            content = source_file.read()
+        
+        # Open the destination file in write mode
+        with open(destination_path, 'w') as destination_file:
+            # Write the contents to the destination file
+            destination_file.write(content)
+        
+        print("File copied successfully.")
+    
+    except Exception as e:
+        print("An error occurred:", e)
+
 def reset():
     global game_won
     global game_lost
