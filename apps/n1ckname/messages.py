@@ -34,3 +34,18 @@ brucon_message = [
     "B  B R R  U  U C   O  O N  NN",
     "BBB  R  R UUUU  CC  OO  N   N"
 ]
+
+francis = [
+    "          FFFF DDD           ",
+    "          F    D  D          ",
+    "          FFF  D  D          ",
+    "          F    D  D          ",
+    "          F    DDD            "
+    "                              "
+    "                              "
+    " K   K  OOO     L    AA  BBB  ",
+    " K  K  O   O    L   A  A B  B ",
+    " KKK   O   O -- L   AAAA BBB  ",
+    " K  K  O   O    L   A  A B  B ",
+    " K   K  OOO     LLL A  A BBB  "
+]
